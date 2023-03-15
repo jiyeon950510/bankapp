@@ -14,13 +14,13 @@
             <div>
                 <ul class="nav justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#">전체</a>
+                        <a class="nav-link" href="#">전체</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#">입금</a>
+                        <a class="nav-link" href="#">입금</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link disabled" href="#">출금</a>
+                        <a class="nav-link" href="#">출금</a>
                     </li>
                 </ul>
             </div>

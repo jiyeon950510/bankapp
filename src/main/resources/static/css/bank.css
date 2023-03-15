@@ -29,3 +29,8 @@
 .my_input {
     width: 95%;
 }
+
+.nav-link {
+    text-decoration: none;
+    color: gray;
+}
