@@ -6,6 +6,7 @@
         <div class="my_form">
             <hr />
             <form action="/join" method="post">
+            <div>
                 <div class="d-flex m-1">
                     <span class="input-group-text my_span" id="inputGroup-sizing-default">ID</span>
                     <input class=" form-control my_input" type="text" name="username"
@@ -22,8 +23,9 @@
                         placeholder="Enter fullname" /><br />
                 </div>
                 <div class="d-grid mx-auto">
-                    <button type="button" class="btn btn-light">회원가입</button>
+                    <button class="btn btn-light" type="submit">회원가입</button>
                 </div>
+            </div>
             </form>
         </div>
     </div>
