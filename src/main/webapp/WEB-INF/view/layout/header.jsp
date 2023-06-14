@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+
         <!DOCTYPE html>
         <html lang="en">
 
@@ -21,29 +22,45 @@
         <body>
             <div class="my_form">
                 <ul class="nav justify-content-center">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/loginForm">로그인</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/joinForm">회원가입</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">로그아웃</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account">계좌목록(인증)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account/saveForm">계좌생성(인증)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account/transferForm">이체하기(인증)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account/withdrawForm">출금하기(미인증)</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/account/depositForm">입금하기(미인증)</a>
-                    </li>
+                    <c:choose>
+                        <c:when test="${principal!=null}">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/logout">로그아웃</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/account">계좌목록(인증)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/account/saveForm">계좌생성(인증)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/account/transferForm">이체하기(인증)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/account/withdrawForm">출금하기(미인증)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/account/depositForm">입금하기(미인증)</a>
+                            </li>
+                        </c:when>
+                 
+                        <c:otherwise>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/loginForm">로그인</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/joinForm">회원가입</a>
+                            </li>
+                                <li class="nav-item">
+                                <a class="nav-link" href="/account/withdrawForm">출금하기(미인증)</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/account/depositForm">입금하기(미인증)</a>
+                            </li>
+                        </c:otherwise>
+                    </c:choose>
+                    
+                  
+                  
                 </ul>
             </div>
