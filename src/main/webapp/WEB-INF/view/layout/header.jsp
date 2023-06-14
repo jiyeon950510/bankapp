@@ -60,7 +60,5 @@
                         </c:otherwise>
                     </c:choose>
                     
-                  
-                  
                 </ul>
             </div>
