@@ -9,6 +9,48 @@
             select * from history_tb where id = #{id}
         </select>
 
+        <select id="findByGubun" resultType="shop.mtcoding.bankapp.dto.history.HistoryResDto">
+
+            <if test = "gubun == 'withdraw'">
+                select ht.amount, 
+                    case when ht.w_account_id = #{accountId} then ht.w_balance
+                    when ht.d_account_id = #{accountId} then ht.d_balance
+                    end as balance,
+                wat.number sender, 'ATM' receiver, ht.created_at
+                from history_tb ht
+                inner join account_tb wat
+                on ht.w_account_id = wat.id
+                where ht.w_account_id=#{accountId};
+            </if>
+                
+            <if test = "gubun == 'deposit'">
+                select ht.amount, 
+                    case when ht.w_account_id = #{accountId} then ht.w_balance
+                    when ht.d_account_id = #{accountId} then ht.d_balance
+                    end as balance,
+                dat.number sender , 'ATM' receiver, ht.created_at
+                from history_tb ht
+                inner join account_tb dat
+                on ht.d_account_id = dat.id
+                where ht.d_account_id=#{accountId};
+            </if>
+
+            <if test = "gubun == 'all'">
+                select ht.amount, 
+                    case when ht.w_account_id = #{accountId} then ht.w_balance
+                    when ht.d_account_id = #{accountId} then ht.d_balance
+                    end as balance,
+                nvl(wat.number, 'ATM') sender, nvl (dat.number,  'ATM') receiver, ht.created_at
+                from history_tb ht
+                left outer join account_tb wat
+                on ht.w_account_id=wat.id
+                left outer join account_tb dat
+                on ht.d_account_id = dat.id
+                where ht.w_account_id =#{accountId} or ht.d_account_id=#{accountId};
+            </if>
+            
+        </select>
+
         <insert id="insert">
             insert into history_tb(amount, w_balance, d_balance, w_account_id, d_account_id, created_at)
             values(#{amount}, #{wBalance},  #{dBalance},  #{wAccountId}, #{dAccountId}, now())

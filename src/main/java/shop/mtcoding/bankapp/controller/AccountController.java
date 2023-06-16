@@ -9,12 +9,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import shop.mtcoding.bankapp.model.account.Account;
 import shop.mtcoding.bankapp.model.account.AccountRepository;
+import shop.mtcoding.bankapp.model.history.HistoryRepository;
+import shop.mtcoding.bankapp.dto.account.AccountDepositReqDto;
+import shop.mtcoding.bankapp.dto.account.AccountDetailResDto;
 import shop.mtcoding.bankapp.dto.account.AccountSaveReqDto;
+import shop.mtcoding.bankapp.dto.account.AccountTransferReqDto;
 import shop.mtcoding.bankapp.dto.account.AccountWithdrawReqDto;
+import shop.mtcoding.bankapp.dto.history.HistoryResDto;
 import shop.mtcoding.bankapp.handler.ex.CustomException;
 import shop.mtcoding.bankapp.model.user.User;
 import shop.mtcoding.bankapp.service.AccountService;
@@ -30,6 +37,57 @@ public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private HistoryRepository historyRepository;
+
+    @PostMapping("/account/transfer")
+    public String transfer(AccountTransferReqDto accountTransferReqDto) {
+        User principal = (User) session.getAttribute("principal");
+        if (principal == null) {
+            throw new CustomException("로그인이 필요한 서비스입니다.", HttpStatus.UNAUTHORIZED);
+        }
+
+        if (accountTransferReqDto.getWAccountNumber().equals(accountTransferReqDto.getDAccountNumber())) {
+            throw new CustomException("출금계좌와 입금계좌가 동일할 수 없습니다", HttpStatus.BAD_REQUEST);
+        }
+        if (accountTransferReqDto.getAmount() == null) {
+            throw new CustomException("amount를 입력해주세요", HttpStatus.BAD_REQUEST);
+        }
+        if (accountTransferReqDto.getAmount().longValue() <= 0) {
+            throw new CustomException("출금액이 0원 이하일 수 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+        if (accountTransferReqDto.getWAccountNumber() == null || accountTransferReqDto.getWAccountNumber().isEmpty()) {
+            throw new CustomException("출금 계좌번호를 입력해 주세요", HttpStatus.BAD_REQUEST);
+        }
+        if (accountTransferReqDto.getDAccountNumber() == null || accountTransferReqDto.getDAccountNumber().isEmpty()) {
+            throw new CustomException("입금 계좌번호를 입력해 주세요", HttpStatus.BAD_REQUEST);
+        }
+        if (accountTransferReqDto.getWAccountPassword() == null
+                || accountTransferReqDto.getWAccountPassword().isEmpty()) {
+            throw new CustomException("계좌 비밀번호를 입력해 주세요", HttpStatus.BAD_REQUEST);
+        }
+        int accountId = accountService.이체하기(accountTransferReqDto, principal.getId());
+
+        return "redirect:/account/" + accountId;
+
+    }
+
+    @PostMapping("/account/deposit")
+    public String deposit(AccountDepositReqDto accountDepositReqDto) {
+        if (accountDepositReqDto.getAmount() == null) {
+            throw new CustomException("amount를 입력해주세요", HttpStatus.BAD_REQUEST);
+        }
+        if (accountDepositReqDto.getAmount().longValue() <= 0) {
+            throw new CustomException("출금액이 0원 이하일 수 없습니다.", HttpStatus.BAD_REQUEST);
+        }
+        if (accountDepositReqDto.getDAccountNumber() == null || accountDepositReqDto.getDAccountNumber().isEmpty()) {
+            throw new CustomException("계좌번호를 입력해 주세요", HttpStatus.BAD_REQUEST);
+        }
+        accountService.입금하기(accountDepositReqDto);
+
+        return "redirect:/";
+    }
 
     @PostMapping("/account/withdraw")
     public String withdraw(AccountWithdrawReqDto accountWithdrawReqDto) {
@@ -87,7 +145,25 @@ public class AccountController {
     }
 
     @GetMapping("/account/{id}")
-    public String detail() {
+    public String detail(@PathVariable int id, @RequestParam(name = "gubun", defaultValue = "all") String gubun,
+            Model model) {
+        // 1. 인증체크
+        User principal = (User) session.getAttribute("principal");
+        if (principal == null) {
+            return "redirect:/loginForm";
+        }
+        // 2. 레파지토리 호출
+        AccountDetailResDto aDto = accountRepository.findByIdWithUser(id);
+        if (aDto.getUserId() != principal.getId()) {
+            throw new CustomException("해당계좌를 볼 권한이 없습니다", HttpStatus.BAD_REQUEST);
+        }
+
+        List<HistoryResDto> hDtoList = historyRepository.findByGubun(gubun, id);
+        System.out.println("테스트 : " + hDtoList.get(0).getBalance());
+
+        model.addAttribute("aDto", aDto);
+        model.addAttribute("hDtoList", hDtoList);
+
         return "account/detail";
     }
 
