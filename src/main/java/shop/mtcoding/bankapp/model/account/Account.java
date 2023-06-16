@@ -32,4 +32,18 @@ public class Account {
             throw new CustomException("출금계좌 비밀번호가 잘못되었습니다", HttpStatus.BAD_REQUEST);
         }
     }
+
+    public void checkOwner(int principalId) {
+        if (userId != principalId) {
+            throw new CustomException("계좌 소유자가 아닙니다", HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    public void checkBalance(Long amount) {
+        if (this.balance < amount) {
+            throw new CustomException("출금 잔액이 부족합니다.", HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }
