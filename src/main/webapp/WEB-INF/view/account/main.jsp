@@ -13,10 +13,12 @@
                     </tr>
 
                 <tbody class="table-group-divider text-center">
-                    <tr>
-                        <td scope="row">1111</td>
-                        <td>1000원</td>
-                    </tr>
+                    <c:forEach items="${accountList}" var="accountList">
+                        <tr>
+                            <td scope="row">${accountList.number}</td>
+                            <td>${accountList.balance}원</td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
         </div>
