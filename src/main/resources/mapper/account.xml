@@ -13,6 +13,11 @@
            select * from account_tb where user_id = #{principalId}
         </select>
 
+        <select id="findByNumber" resultType="shop.mtcoding.bankapp.model.account.Account">
+           select * from account_tb where number = #{number}
+        </select>
+
+
         <insert id="insert">
             insert into account_tb (number, password, balance, user_id, created_at) values(#{number}, #{password}, #{balance}, #{userId}, now())
         </insert>

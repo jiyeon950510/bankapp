@@ -5,7 +5,7 @@
         <p class="text-center fs-4" style="font-weight: bolder;">ATM 출금</p>
         <div class="my_form">
             <hr />
-            <form action="/join" method="post">
+            <form action="/account/withdraw" method="post">
                 <div class="d-flex m-1">
                     <span class="input-group-text my_span" id="inputGroup-sizing-default">출금금액</span>
                     <input class=" form-control my_input" type="text" name="amount" placeholder="Enter 출금금액" /><br />
@@ -17,11 +17,11 @@
                 </div>
                 <div class="d-flex m-1">
                     <span class="input-group-text my_span" id="inputGroup-sizing-default">계좌 비밀번호</span>
-                    <input class="form-control my_input" type="text" name="wAccountPassword"
+                    <input class="form-control my_input" type="password" name="wAccountPassword"
                         placeholder="Enter 출금계좌비밀번호" /><br />
                 </div>
                 <div class="d-grid mx-auto">
-                    <button type="button" class="btn btn-light">출금</button>
+                    <button type="submit" class="btn btn-light">출금</button>
                 </div>
             </form>
         </div>
