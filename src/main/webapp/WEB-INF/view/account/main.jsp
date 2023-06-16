@@ -15,7 +15,7 @@
                 <tbody class="table-group-divider text-center">
                     <c:forEach items="${accountList}" var="accountList">
                         <tr>
-                            <td scope="row">${accountList.number}</td>
+                            <td scope="row"><a href="/account/${accountList.id}">${accountList.number}</a></td>
                             <td>${accountList.balance}원</td>
                         </tr>
                     </c:forEach>

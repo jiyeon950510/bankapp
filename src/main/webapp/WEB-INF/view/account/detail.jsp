@@ -6,21 +6,21 @@
         <div class="my_form">
             <hr />
             <div class="border border-success p-2 mb-2 border-opacity-25 text-center">
-                fullname님 계좌<br />
-                계좌번호 : 1111<br />
-                잔액 : 1000원
+                ${aDto.fullname}님 계좌<br />
+                계좌번호 : ${aDto.number}<br />
+                잔액 : ${aDto.balance}원
             </div>
             <hr />
             <div>
                 <ul class="nav justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">전체</a>
+                        <a class="nav-link" href="/account/${aDto.id}?gubun=all">전체</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">입금</a>
+                        <a class="nav-link" href="/account/${aDto.id}?gubun=deposit">입금</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">출금</a>
+                        <a class="nav-link" href="/account/${aDto.id}?gubun=withdraw">출금</a>
                     </li>
                 </ul>
             </div>
@@ -35,13 +35,15 @@
                     </tr>
 
                 <tbody class="table-group-divider text-center">
-                    <tr>
-                        <td scope="row">2022.10.01</td>
-                        <td scope="row">atm</td>
-                        <td scope="row">1111게좌</td>
-                        <td scope="row">1111원</td>
-                        <td scope="row">1111원</td>
-                    </tr>
+                    <c:forEach items="${hDtoList}" var="history">
+                        <tr>
+                            <td scope="row">${history.createdAt}</td>
+                            <td scope="row">${history.sender}</td>
+                            <td scope="row">${history.receiver}</td>
+                            <td scope="row">${history.amount}</td>
+                            <td scope="row">${history.balance}</td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
         </div>

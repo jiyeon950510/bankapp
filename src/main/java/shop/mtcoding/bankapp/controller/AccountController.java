@@ -9,14 +9,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import shop.mtcoding.bankapp.model.account.Account;
 import shop.mtcoding.bankapp.model.account.AccountRepository;
+import shop.mtcoding.bankapp.model.history.HistoryRepository;
 import shop.mtcoding.bankapp.dto.account.AccountDepositReqDto;
+import shop.mtcoding.bankapp.dto.account.AccountDetailResDto;
 import shop.mtcoding.bankapp.dto.account.AccountSaveReqDto;
 import shop.mtcoding.bankapp.dto.account.AccountTransferReqDto;
 import shop.mtcoding.bankapp.dto.account.AccountWithdrawReqDto;
+import shop.mtcoding.bankapp.dto.history.HistoryResDto;
 import shop.mtcoding.bankapp.handler.ex.CustomException;
 import shop.mtcoding.bankapp.model.user.User;
 import shop.mtcoding.bankapp.service.AccountService;
@@ -32,6 +37,9 @@ public class AccountController {
 
     @Autowired
     private AccountRepository accountRepository;
+
+    @Autowired
+    private HistoryRepository historyRepository;
 
     @PostMapping("/account/transfer")
     public String transfer(AccountTransferReqDto accountTransferReqDto) {
@@ -137,7 +145,25 @@ public class AccountController {
     }
 
     @GetMapping("/account/{id}")
-    public String detail() {
+    public String detail(@PathVariable int id, @RequestParam(name = "gubun", defaultValue = "all") String gubun,
+            Model model) {
+        // 1. 인증체크
+        User principal = (User) session.getAttribute("principal");
+        if (principal == null) {
+            return "redirect:/loginForm";
+        }
+        // 2. 레파지토리 호출
+        AccountDetailResDto aDto = accountRepository.findByIdWithUser(id);
+        if (aDto.getUserId() != principal.getId()) {
+            throw new CustomException("해당계좌를 볼 권한이 없습니다", HttpStatus.BAD_REQUEST);
+        }
+
+        List<HistoryResDto> hDtoList = historyRepository.findByGubun(gubun, id);
+        System.out.println("테스트 : " + hDtoList.get(0).getBalance());
+
+        model.addAttribute("aDto", aDto);
+        model.addAttribute("hDtoList", hDtoList);
+
         return "account/detail";
     }
 
